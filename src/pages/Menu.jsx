@@ -1,176 +1,3 @@
-
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-// import Navbar from "../components/Navbar";
-// import { useNavigate } from "react-router-dom";
-
-// const Menu = () => {
-//   const [products, setProducts] = useState([]);
-//   const [cart, setCart] = useState(null);
-
-//   const token = localStorage.getItem("token");
-//   const navigate = useNavigate();
-
-//   const BASE_URL = process.env.REACT_APP_BASE_URL;
-
-//   useEffect(() => {
-//     if (!token) {
-//       navigate("/login");
-//       return;
-//     }
-
-//     fetchMenu();
-//     fetchCart();
-//   }, []);
-
-//   const fetchMenu = async () => {
-//     try {
-//       const res = await axios.get(`${BASE_URL}/products/menu`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//           "x-api-key": process.env.REACT_APP_API_KEY
-//         }
-//       });
-//       setProducts(res.data.data);
-//     } catch (error) {
-//       console.error("Failed to fetch menu");
-//     }
-//   };
-
-//   const fetchCart = async () => {
-//     try {
-//       const res = await axios.get(`${BASE_URL}/cart`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//           "x-api-key": process.env.REACT_APP_API_KEY
-//         }
-//       });
-//       setCart(res.data);
-//     } catch (error) {
-//       console.error("Failed to fetch cart");
-//     }
-//   };
-
-//   const getItemQty = (productId) => {
-//     if (!cart?.items) return 0;
-//     const item = cart.items.find(
-//       (i) => i.product._id === productId
-//     );
-//     return item ? item.quantity : 0;
-//   };
-
-//   const updateQty = async (productId, action) => {
-//     try {
-//       const endpoint =
-//         action === "increase"
-//           ? `${BASE_URL}/cart/add`
-//           : `${BASE_URL}/cart/reduce`;
-
-//       await axios.post(
-//         endpoint,
-//         { productId },
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             "x-api-key": process.env.REACT_APP_API_KEY
-//           }
-//         }
-//       );
-
-//       fetchCart();
-//     } catch (error) {
-//       alert(error.response?.data?.message || "Update failed");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-950 text-white">
-//       <Navbar />
-
-//       <div className="max-w-7xl mx-auto px-6 py-12">
-//         <h1 className="text-4xl font-bold mb-10">🍕 Menu</h1>
-
-//         <div className="grid md:grid-cols-3 gap-8">
-//           {products.map((item) => {
-//             const qty = getItemQty(item._id);
-
-//             return (
-//               <div
-//                 key={item._id}
-//                 className="bg-gray-900 p-6 rounded-xl border border-gray-800"
-//               >
-//                 <h2 className="text-xl font-semibold mb-2">
-//                   {item.name}
-//                 </h2>
-
-//                 <p className="text-gray-400 mb-2">
-//                   {item.category}
-//                 </p>
-
-//                 <p className="text-yellow-400 font-bold mb-4">
-//                   ₹{item.price}
-//                 </p>
-
-//                 <p className="text-sm text-gray-500 mb-4">
-//                   Available: {item.inventory}
-//                 </p>
-
-//                 {item.inventory === 0 ? (
-//                   <button
-//                     disabled
-//                     className="w-full py-2 bg-gray-700 rounded-lg cursor-not-allowed"
-//                   >
-//                     Out of Stock
-//                   </button>
-//                 ) : qty === 0 ? (
-//                   <button
-//                     onClick={() =>
-//                       updateQty(item._id, "increase")
-//                     }
-//                     className="w-full py-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400"
-//                   >
-//                     Add to Cart
-//                   </button>
-//                 ) : (
-//                   <div className="flex items-center justify-between">
-//                     <button
-//                       onClick={() =>
-//                         updateQty(item._id, "decrease")
-//                       }
-//                       className="px-4 py-2 bg-gray-700 rounded-lg"
-//                     >
-//                       −
-//                     </button>
-
-//                     <span className="font-semibold">
-//                       {qty}
-//                     </span>
-
-//                     <button
-//                       onClick={() =>
-//                         updateQty(item._id, "increase")
-//                       }
-//                       disabled={qty >= item.inventory}
-//                       className={`px-4 py-2 rounded-lg ${
-//                         qty >= item.inventory
-//                           ? "bg-gray-700 cursor-not-allowed"
-//                           : "bg-gray-700 hover:bg-gray-600"
-//                       }`}
-//                     >
-//                       +
-//                     </button>
-//                   </div>
-//                 )}
-//               </div>
-//             );
-//           })}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Menu;
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
@@ -182,6 +9,7 @@ const Menu = () => {
   const [toast, setToast] = useState(null);
   const [confirmModal, setConfirmModal] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -281,11 +109,17 @@ const Menu = () => {
     });
   };
 
+  const categories = ["All", "Pizza", "Drink", "Bread"];
+
+  const filteredProducts = selectedCategory === "All" 
+    ? products 
+    : products.filter(product => product.category.toLowerCase() === selectedCategory.toLowerCase());
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-teal-50 to-sky-100">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-6 py-12 mt-16 ">
+      <div className="max-w-7xl mx-auto px-6 py-12 mt-16">
         <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-5xl font-bold text-teal-800 mb-3 tracking-tight">
             🍕 Our Delicious Menu
@@ -296,13 +130,34 @@ const Menu = () => {
           <div className="h-1 w-24 bg-gradient-to-r from-cyan-400 to-teal-500 mx-auto mt-4 rounded-full"></div>
         </div>
 
+        {/* Category Filter */}
+        <div className="flex justify-center gap-3 mb-8 flex-wrap">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                selectedCategory === category
+                  ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg"
+                  : "bg-white text-gray-700 hover:bg-teal-50 border-2 border-teal-200"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
         {loading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-teal-200 border-t-teal-500"></div>
           </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600 text-lg">No items found in this category</p>
+          </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((item, index) => {
+            {filteredProducts.map((item, index) => {
               const qty = getItemQty(item._id);
 
               return (

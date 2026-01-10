@@ -1,0 +1,571 @@
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+// import Navbar from "../components/Navbar";
+
+// const AdminAllOrders = () => {
+//   const [orders, setOrders] = useState([]);
+//   const token = localStorage.getItem("token");
+//   const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+//   useEffect(() => {
+//     fetchAllOrders();
+//   }, []);
+
+//   const fetchAllOrders = async () => {
+//     try {
+//       const res = await axios.get(`${BASE_URL}/orders/all`, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           "x-api-key": process.env.REACT_APP_API_KEY
+//         }
+//       });
+
+//       setOrders(res.data.orders);
+//     } catch (err) {
+//       console.error(err);
+//       alert("Failed to fetch all orders");
+//     }
+//   };
+
+//   const cancelOrder = async (orderId) => {
+//     try {
+//       await axios.put(
+//         `${BASE_URL}/orders/${orderId}/cancel`,
+//         {},
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//             "x-api-key": process.env.REACT_APP_API_KEY
+//           }
+//         }
+//       );
+//       fetchAllOrders();
+//     } catch (err) {
+//       alert(err.response?.data?.message || "Cancel failed");
+//     }
+//   };
+
+//   const markReceived = async (orderId) => {
+//     try {
+//       await axios.put(
+//         `${BASE_URL}/orders/${orderId}/received`,
+//         {},
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//             "x-api-key": process.env.REACT_APP_API_KEY
+//           }
+//         }
+//       );
+//       fetchAllOrders();
+//     } catch (err) {
+//       alert("Failed to mark order received");
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gray-950 text-white">
+//       <Navbar />
+
+//       <div className="max-w-7xl mx-auto px-6 py-10">
+//         <h1 className="text-3xl font-bold mb-8">🛠️ All Orders (Admin)</h1>
+
+//         {!orders&&orders.length === 0 ? (
+//           <p className="text-gray-400">No orders found</p>
+//         ) : (
+//           orders.map((order) => (
+//             <div
+//               key={order._id}
+//               className="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-6"
+//             >
+//               {/* Header */}
+//               {/* <div className="flex justify-between items-center mb-4">
+//                 <div className="text-sm text-gray-400">
+//                   <p>Order ID: {order._id}</p>
+//                   <p>User ID: {order.userId}</p>
+//                   <p>
+//                     Date: {new Date(order.createdAt).toLocaleString()}
+//                   </p>
+//                 </div>
+
+//                 <span
+//                   className={`px-3 py-1 rounded-full text-sm font-semibold ${
+//                     order.status === "PLACED"
+//                       ? "bg-yellow-500 text-black"
+//                       : order.status === "RECEIVED"
+//                       ? "bg-green-600"
+//                       : "bg-red-600"
+//                   }`}
+//                 >
+//                   {order.status}
+//                 </span>
+//               </div> */}
+//               <div className="flex justify-between items-center mb-4">
+//   <div className="text-sm text-gray-400 space-y-1">
+//     <p><span className="text-gray-500">Order ID:</span> {order._id}</p>
+
+//     <p>
+//       <span className="text-gray-500">User:</span>{" "}
+//       {order.userId?.name}
+//     </p>
+
+//     <p>
+//       <span className="text-gray-500">Email:</span>{" "}
+//       {order.userId?.email}
+//     </p>
+
+//     <p>
+//       <span className="text-gray-500">Date:</span>{" "}
+//       {new Date(order.createdAt).toLocaleString()}
+//     </p>
+//   </div>
+
+//   <span
+//     className={`px-3 py-1 rounded-full text-sm font-semibold ${
+//       order.status === "PLACED"
+//         ? "bg-yellow-500 text-black"
+//         : order.status === "RECEIVED"
+//         ? "bg-green-600"
+//         : "bg-red-600"
+//     }`}
+//   >
+//     {order.status}
+//   </span>
+// </div>
+
+
+//               {/* Items */}
+//               {/* <div className="space-y-2">
+//                 {order.items.map((item, idx) => (
+//                   <div
+//                     key={idx}
+//                     className="flex justify-between text-gray-300"
+//                   >
+//                     <span>
+//                       {item.product?.name || "Item"} × {item.quantity}
+//                     </span>
+//                     <span>₹{item.price * item.quantity}</span>
+//                   </div>
+//                 ))}
+//               </div> */}
+//               {order.items.map((item, idx) => (
+//   <div key={idx} className="flex justify-between text-gray-300">
+//     <span>
+//       {item.product?.name || "Item"} × {item.quantity}
+//     </span>
+//     <span>₹{item.price * item.quantity}</span>
+//   </div>
+// ))}
+
+
+//               {/* Footer */}
+//               <div className="flex justify-between items-center mt-6">
+//                 <h2 className="text-lg font-semibold">
+//                   Total: ₹{order.totalAmount}
+//                 </h2>
+
+//                 <div className="flex gap-3">
+//                   {order.status === "PLACED" && (
+//                     <>
+//                       <button
+//                         onClick={() => cancelOrder(order._id)}
+//                         className="px-4 py-2 bg-red-600 rounded hover:bg-red-500"
+//                       >
+//                         Cancel
+//                       </button>
+
+//                       <button
+//                         onClick={() => markReceived(order._id)}
+//                         className="px-4 py-2 bg-green-600 rounded hover:bg-green-500"
+//                       >
+//                         Mark Received
+//                       </button>
+//                     </>
+//                   )}
+//                 </div>
+//               </div>
+//             </div>
+//           ))
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminAllOrders;
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Navbar from "../components/Navbar";
+
+const AdminAllOrders = () => {
+  const [orders, setOrders] = useState([]);
+  const [toast, setToast] = useState(null);
+  const [confirmModal, setConfirmModal] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const token = localStorage.getItem("token");
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
+  useEffect(() => {
+    fetchAllOrders();
+  }, []);
+
+  const fetchAllOrders = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/orders/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "x-api-key": process.env.REACT_APP_API_KEY
+        }
+      });
+      setOrders(res.data.orders);
+    } catch (err) {
+      showToast("Failed to fetch all orders", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const cancelOrder = async (orderId, userName, orderTotal) => {
+    setConfirmModal({
+      title: "Cancel Order?",
+      message: `Cancel ${userName}'s order of ₹${orderTotal}?`,
+      type: "cancel",
+      onConfirm: async () => {
+        setActionLoading(true);
+        try {
+          await axios.put(
+            `${BASE_URL}/orders/${orderId}/cancel`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "x-api-key": process.env.REACT_APP_API_KEY
+              }
+            }
+          );
+          await fetchAllOrders();
+          showToast("Order cancelled successfully", "success");
+          setConfirmModal(null);
+        } catch (err) {
+          showToast(err.response?.data?.message || "Cancel failed", "error");
+          setConfirmModal(null);
+        } finally {
+          setActionLoading(false);
+        }
+      },
+      onCancel: () => setConfirmModal(null)
+    });
+  };
+
+  const markReceived = async (orderId, userName, orderTotal) => {
+    setConfirmModal({
+      title: "Mark as Delivered?",
+      message: `Mark ${userName}'s order of ₹${orderTotal} as delivered?`,
+      type: "delivered",
+      onConfirm: async () => {
+        setActionLoading(true);
+        try {
+          await axios.put(
+            `${BASE_URL}/orders/${orderId}/received`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "x-api-key": process.env.REACT_APP_API_KEY
+              }
+            }
+          );
+          await fetchAllOrders();
+          showToast("Order marked as delivered! 🚚", "success");
+          setConfirmModal(null);
+        } catch (err) {
+          showToast("Failed to mark order as delivered", "error");
+          setConfirmModal(null);
+        } finally {
+          setActionLoading(false);
+        }
+      },
+      onCancel: () => setConfirmModal(null)
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-teal-50 to-sky-100">
+        <Navbar />
+        <div className="flex justify-center items-center h-96">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-teal-200 border-t-teal-500"></div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-teal-50 to-sky-100">
+      <Navbar />
+
+      <div className="max-w-7xl mx-auto px-6 py-12 mt-16    ">
+        <div className="flex items-center justify-between mb-10 animate-fade-in">
+          <div>
+            <h1 className="text-5xl font-bold text-teal-800 mb-2">
+              🛠️ All Orders (Admin)
+            </h1>
+            <p className="text-gray-600">
+              {!orders || orders.length === 0 ? "No orders yet" : `Managing ${orders.length} order${orders.length > 1 ? 's' : ''}`}
+            </p>
+          </div>
+          <div className="h-1 w-24 bg-gradient-to-r from-orange-400 to-rose-500 rounded-full"></div>
+        </div>
+
+        {!orders || orders.length === 0 ? (
+          <div className="text-center py-20 animate-scale-in">
+            <div className="bg-white rounded-3xl p-12 shadow-lg border border-cyan-200 max-w-md mx-auto">
+              <div className="text-8xl mb-6">📋</div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-3">
+                No orders found
+              </h2>
+              <p className="text-gray-600">
+                Orders will appear here once customers start placing them.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {orders.map((order, index) => (
+              <div
+                key={order._id}
+                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-cyan-200 overflow-hidden"
+                style={{
+                  animation: `slideUp 0.4s ease-out ${index * 0.1}s both`
+                }}
+              >
+                {/* Header */}
+                <div className="bg-gradient-to-r from-orange-50 to-rose-50 p-6 border-b border-orange-200">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div className="space-y-1">
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold text-gray-700">Order ID:</span>{" "}
+                        <span className="font-mono text-teal-700">{order._id}</span>
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold text-gray-700">Customer:</span>{" "}
+                        <span className="text-gray-800">{order.userId?.name}</span>
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold text-gray-700">Email:</span>{" "}
+                        <span className="text-gray-800">{order.userId?.email}</span>
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-semibold text-gray-700">Date:</span>{" "}
+                        📅 {new Date(order.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+
+                    <span
+                      className={`px-4 py-2 rounded-full text-sm font-bold shadow-md whitespace-nowrap ${
+                        order.status === "PLACED"
+                          ? "bg-gradient-to-r from-amber-400 to-orange-500 text-white"
+                          : order.status === "RECEIVED"
+                          ? "bg-gradient-to-r from-emerald-400 to-teal-500 text-white"
+                          : "bg-gradient-to-r from-rose-400 to-pink-500 text-white"
+                      }`}
+                    >
+                      {order.status === "PLACED" ? "🕐 Placed" : order.status === "RECEIVED" ? "✓ Delivered" : "✗ Cancelled"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Items */}
+                <div className="p-6">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4">Order Items</h3>
+                  <div className="space-y-3">
+                    {order.items.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex justify-between items-center bg-gradient-to-r from-teal-50 to-cyan-50 p-4 rounded-xl border border-teal-200"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">🍽️</span>
+                          <div>
+                            <p className="font-semibold text-gray-800">
+                              {item.product?.name || "Item"}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              Quantity: {item.quantity}
+                            </p>
+                          </div>
+                        </div>
+                        <p className="font-bold text-teal-600">
+                          ₹{item.price * item.quantity}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="bg-gradient-to-r from-white to-orange-50 p-6 border-t border-orange-200">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                      <p className="text-gray-600 mb-1">Total Amount</p>
+                      <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-rose-600">
+                        ₹{order.totalAmount}
+                      </h2>
+                    </div>
+
+                    {order.status === "PLACED" && (
+                      <div className="flex gap-3 flex-wrap">
+                        <button
+                          onClick={() => cancelOrder(order._id, order.userId?.name, order.totalAmount)}
+                          className="px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold rounded-xl hover:from-rose-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                        >
+                          Cancel Order ✗
+                        </button>
+
+                        <button
+                          onClick={() => markReceived(order._id, order.userId?.name, order.totalAmount)}
+                          className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                        >
+                          Mark Delivered 🚚
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Confirmation Modal */}
+      {confirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in backdrop-blur-sm">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl transform animate-scale-in border-2 border-cyan-200">
+            <div className="text-center mb-6">
+              <div className="text-6xl mb-4">
+                {confirmModal.type === "delivered" ? "🚚" : "✗"}
+              </div>
+              <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                {confirmModal.title}
+              </h3>
+              <p className="text-gray-600">
+                {confirmModal.message}
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={confirmModal.onCancel}
+                disabled={actionLoading}
+                className="flex-1 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmModal.onConfirm}
+                disabled={actionLoading}
+                className={`flex-1 py-3 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${
+                  confirmModal.type === "delivered"
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+                    : "bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
+                }`}
+              >
+                {actionLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  "Confirm ✓"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-20 right-6 z-50 animate-slide-in">
+          <div
+            className={`rounded-xl shadow-2xl p-4 flex items-center gap-3 border-2 ${
+              toast.type === "success"
+                ? "bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-400 text-emerald-800"
+                : "bg-gradient-to-r from-rose-50 to-pink-50 border-rose-400 text-rose-800"
+            }`}
+          >
+            <span className="text-2xl">
+              {toast.type === "success" ? "✓" : "⚠"}
+            </span>
+            <p className="font-semibold">{toast.message}</p>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes scale-in {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes slide-in {
+          from {
+            opacity: 0;
+            transform: translateX(100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.5s ease-out;
+        }
+
+        .animate-scale-in {
+          animation: scale-in 0.3s ease-out;
+        }
+
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default AdminAllOrders;

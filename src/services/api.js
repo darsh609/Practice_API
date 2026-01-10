@@ -1,0 +1,30 @@
+// import axios from "axios";
+
+// const api = axios.create({
+//   baseURL:process.env.REACT_APP_BASE_URL, // backend url
+//   headers: {
+//     "x-api-key": "hcl-hackathon-2025"
+//   }
+// });
+
+// export default api;
+import axios from "axios";
+ 
+const api = axios.create({
+    
+  baseURL: process.env.REACT_APP_BASE_URL,
+  headers: {
+    // Debugging line   
+    "x-api-key": process.env.REACT_APP_API_KEY
+  }
+});
+
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export default api;

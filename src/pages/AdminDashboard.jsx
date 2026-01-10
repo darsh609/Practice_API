@@ -1,244 +1,9 @@
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-// import Navbar from "../components/Navbar";
-// import { useNavigate } from "react-router-dom";
-
-// const AdminDashboard = () => {
-//   const [products, setProducts] = useState([]);
-//   const [form, setForm] = useState({
-//     name: "",
-//     category: "",
-//     price: "",
-//     inventory: ""
-//   });
-//   const [editingId, setEditingId] = useState(null);
-
-//   const token = localStorage.getItem("token");
-//   const navigate = useNavigate();
-//   const BASE_URL = process.env.REACT_APP_BASE_URL;
-
-//   useEffect(() => {
-//     fetchProducts();
-//   }, []);
-
-//   const fetchProducts = async () => {
-//     try {
-//       const res = await axios.get(`${BASE_URL}/products/all`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//           "x-api-key": process.env.REACT_APP_API_KEY
-//         }
-//       });
-//       setProducts(res.data.data);
-//     } catch (error) {
-//       alert("Failed to load products");
-//     }
-//   };
-
-//   const handleChange = (e) => {
-//     setForm({ ...form, [e.target.name]: e.target.value });
-//   };
-
-//   const submitProduct = async () => {
-//     try {
-//       if (editingId) {
-//         await axios.patch(
-//           `${BASE_URL}/products/${editingId}/`,
-//           form,
-//           {
-//             headers: {
-//               Authorization: `Bearer ${token}`,
-//               "x-api-key": process.env.REACT_APP_API_KEY
-//             }
-//           }
-//         );
-//       } else {
-//         await axios.post(
-//           `${BASE_URL}/products/add`,
-//           form,
-//           {
-//             headers: {
-//               Authorization: `Bearer ${token}`,
-//               "x-api-key": process.env.REACT_APP_API_KEY
-//             }
-//           }
-//         );
-//       }
-
-//       setForm({ name: "", category: "", price: "", inventory: "" });
-//       setEditingId(null);
-//       fetchProducts();
-//     } catch (error) {
-//       alert(error.response?.data?.message || "Operation failed");
-//     }
-//   };
-
-//   const editProduct = (product) => {
-//     setEditingId(product._id);
-//     setForm({
-//       name: product.name,
-//       category: product.category,
-//       price: product.price,
-//       inventory: product.inventory
-//     });
-//   };
-
-//   const toggleAvailability = async (id, isAvailable) => {
-//     try {
-//       await axios.patch(
-//         `${BASE_URL}/products/${id}`,
-//         { isAvailable: !isAvailable },
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             "x-api-key": process.env.REACT_APP_API_KEY
-//           }
-//         }
-//       );
-//       fetchProducts();
-//     } catch {
-//       alert("Failed to update availability");
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-950 text-white">
-//       <Navbar />
-// <div className="flex justify-between items-center mb-8">
-//   <h1 className="text-3xl font-bold">🛠 Admin Dashboard</h1>
-
-//   <button
-//     onClick={() => navigate("/admin/orders")}
-//     className="flex items-center gap-2 px-6 py-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition"
-//   >
-//     📦 All Orders
-//   </button>
-// </div>
-
-//       <div className="max-w-7xl mx-auto px-6 py-10">
-//         <div className="flex justify-between items-center mb-8">
-//           <h1 className="text-3xl font-bold">🛠 Admin Dashboard</h1>
-
-//           <button
-//             onClick={() => navigate("/admin/orders")}
-//             className="px-6 py-2 bg-yellow-500 text-black font-semibold rounded-lg"
-//           >
-//             View All Orders
-//           </button>
-//         </div>
-
-//         {/* ADD / UPDATE PRODUCT */}
-//         <div className="bg-gray-900 p-6 rounded-xl mb-10">
-//           <h2 className="text-xl font-semibold mb-4">
-//             {editingId ? "✏️ Update Product" : "➕ Add Product"}
-//           </h2>
-
-//           <div className="grid md:grid-cols-4 gap-4">
-//             <input
-//               name="name"
-//               placeholder="Name"
-//               value={form.name}
-//               onChange={handleChange}
-//               className="p-2 rounded bg-gray-800"
-//             />
-//             <input
-//               name="category"
-//               placeholder="Category"
-//               value={form.category}
-//               onChange={handleChange}
-//               className="p-2 rounded bg-gray-800"
-//             />
-//             <input
-//               name="price"
-//               type="number"
-//               placeholder="Price"
-//               value={form.price}
-//               onChange={handleChange}
-//               className="p-2 rounded bg-gray-800"
-//             />
-//             <input
-//               name="inventory"
-//               type="number"
-//               placeholder="Inventory"
-//               value={form.inventory}
-//               onChange={handleChange}
-//               className="p-2 rounded bg-gray-800"
-//             />
-//           </div>
-
-//           <button
-//             onClick={submitProduct}
-//             className="mt-4 px-6 py-2 bg-green-500 text-black font-semibold rounded-lg"
-//           >
-//             {editingId ? "Update Product" : "Add Product"}
-//           </button>
-//         </div>
-
-//         {/* PRODUCT LIST */}
-//         <div className="grid md:grid-cols-2 gap-6">
-//           {products.map((product) => (
-//             <div
-//               key={product._id}
-//               className="bg-gray-900 p-5 rounded-xl"
-//             >
-//               <h3 className="text-lg font-semibold">
-//                 {product.name}
-//               </h3>
-
-//               <p className="text-gray-400">
-//                 {product.category} | ₹{product.price}
-//               </p>
-
-//               <p className="text-sm text-gray-500">
-//                 Inventory: {product.inventory}
-//               </p>
-
-//               <p
-//                 className={`text-sm mt-1 ${
-//                   product.isAvailable
-//                     ? "text-green-400"
-//                     : "text-red-400"
-//                 }`}
-//               >
-//                 {product.isAvailable ? "Available" : "Unavailable"}
-//               </p>
-
-//               <div className="flex space-x-4 mt-4">
-//                 <button
-//                   onClick={() => editProduct(product)}
-//                   className="px-4 py-1 bg-blue-500 rounded"
-//                 >
-//                   Edit
-//                 </button>
-
-//                 <button
-//                   onClick={() =>
-//                     toggleAvailability(
-//                       product._id,
-//                       product.isAvailable
-//                     )
-//                   }
-//                   className="px-4 py-1 bg-red-500 rounded"
-//                 >
-//                   Toggle
-//                 </button>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AdminDashboard;
-
-
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+const CATEGORIES = ["PIZZA", "DRINK", "BREAD"];
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
@@ -449,7 +214,7 @@ const AdminDashboard = () => {
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Category
               </label>
@@ -460,8 +225,27 @@ const AdminDashboard = () => {
                 onChange={handleChange}
                 className="w-full p-3 rounded-xl bg-gradient-to-r from-teal-50 to-cyan-50 border-2 border-teal-200 focus:border-teal-400 focus:outline-none transition-all duration-300 text-gray-800"
               />
-            </div>
-
+            </div> */}
+<div>
+  <label className="block text-sm font-semibold text-gray-700 mb-2">
+    Category
+  </label>
+  <select
+    name="category"
+    value={form.category}
+    onChange={handleChange}
+    className="w-full p-3 rounded-xl bg-gradient-to-r from-teal-50 to-cyan-50 border-2 border-teal-200 focus:border-teal-400 focus:outline-none transition-all duration-300 text-gray-800 cursor-pointer"
+  >
+    <option value="" disabled>
+      Select a category
+    </option>
+    {CATEGORIES.map((cat) => (
+      <option key={cat} value={cat}>
+        {cat}
+      </option>
+    ))}
+  </select>
+</div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Price (₹)

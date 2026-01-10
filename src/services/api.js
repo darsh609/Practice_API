@@ -1,13 +1,4 @@
-// import axios from "axios";
 
-// const api = axios.create({
-//   baseURL:process.env.REACT_APP_BASE_URL, // backend url
-//   headers: {
-//     "x-api-key": "hcl-hackathon-2025"
-//   }
-// });
-
-// export default api;
 import axios from "axios";
  
 const api = axios.create({

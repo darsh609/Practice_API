@@ -1,70 +1,190 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 🍕 Food Ordering & Cart Management System
 
-## Available Scripts
+A **full-stack food ordering application** built using **React, Node.js, Express, and MongoDB**, supporting **user & admin roles**, cart management, and order lifecycle handling.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🚀 Live Links
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* **Frontend (React)**
+  👉 [https://practice-api.vercel.app/](https://practice-api.vercel.app/)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+* **Backend (Node + Express)**
+  👉 [https://practice-api-419w.onrender.com/](https://practice-api-419w.onrender.com/)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🧠 Project Overview
 
-### `npm run build`
+This project simulates a real-world **food ordering platform** where:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+* Users can browse menu items
+* Add/remove products from cart
+* Place orders and track order status
+* Admins can manage products and orders
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The focus was on **clean API design**, **role-based access**, and **realistic e-commerce flows**.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## ✨ Features
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 👤 User Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+* View menu items
+* Add items to cart
+* Increase / decrease quantity using `+ / -`
+* Clear cart
+* Place orders
+* View **My Orders**
+* Cancel order (if allowed)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 🛠 Admin Features
 
-## Learn More
+* Admin Dashboard
+* Add new products
+* Update product details (price, inventory, availability)
+* Toggle product availability
+* View **All Orders**
+* Cancel any order
+* Mark order as **RECEIVED** (admin-only)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🔐 Authentication & Authorization
 
-### Code Splitting
+* JWT-based authentication
+* Role-based access control
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+  * `USER`
+  * `ADMIN`
+* Protected routes for cart, orders, and admin operations
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🧩 Tech Stack
 
-### Making a Progressive Web App
+### Frontend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+* React
+* Axios
+* React Router
+* Tailwind CSS
 
-### Advanced Configuration
+### Backend
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+* Node.js
+* Express.js
+* MongoDB + Mongoose
+* JWT Authentication
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+* Frontend: **Vercel**
+* Backend: **Render**
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📦 API Highlights
+
+### Cart APIs
+
+* `POST /cart/add`
+* `POST /cart/reduce`
+* `DELETE /cart/remove/:productId`
+* `DELETE /cart/clear`
+* `GET /cart`
+
+### Order APIs
+
+* `POST /orders`
+* `GET /orders/my-orders`
+* `PUT /orders/:orderId/cancel`
+* `PUT /orders/:orderId/received` (Admin)
+
+### Product APIs (Admin)
+
+* `POST /products/add`
+* `PATCH /products/:id`
+* `GET /products/menu`
+
+---
+
+## 🖥 Admin Pages
+
+* **Admin Dashboard**
+
+  * Product management
+  * Inventory control
+  * Availability toggle
+
+* **Admin Orders Page** (`/admin/orders`)
+
+  * View all user orders
+  * Cancel orders
+  * Mark orders as received
+
+---
+
+## 🧪 Sample Admin Workflow
+
+1. Login as Admin
+2. Add / update products
+3. View all orders
+4. Cancel invalid orders
+5. Mark delivered orders as RECEIVED
+
+---
+
+## 🛠 Environment Variables
+
+### Frontend
+
+```env
+REACT_APP_BASE_URL=https://practice-api-419w.onrender.com
+REACT_APP_API_KEY=your_api_key
+```
+
+### Backend
+
+```env
+PORT=5000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+API_KEY=your_api_key
+```
+
+---
+
+## 🎯 What Makes This Project Stand Out
+
+* Real-world cart logic using incremental APIs
+* Clean separation of user vs admin responsibilities
+* Proper REST API design
+* Scalable backend structure
+* Deployed and production-ready
+
+---
+
+## 👨‍💻 Author
+
+**Darsh Kumar**
+Final-year B.Tech student, NIT Warangal
+Interested in backend systems, APIs, and scalable applications
+
+---
+
+## ⭐ Future Improvements
+
+* Pagination for orders
+* Product image upload
+* Order status timeline
+* Payment gateway integration
+* Swagger API documentation
+
+---
+
+

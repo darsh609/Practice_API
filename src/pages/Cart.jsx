@@ -449,7 +449,7 @@ const clearCart = async () => {
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-teal-50 to-sky-100">
       <Navbar />
 
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-5xl mx-auto px-6 py-12 mt-16">
         <div className="flex items-center justify-between mb-10 animate-fade-in">
           <div>
             <h1 className="text-5xl font-bold text-teal-800 mb-2">

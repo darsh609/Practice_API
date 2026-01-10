@@ -1,6 +1,6 @@
 const Otp = require("../models/otp.model");
 const generateOtp = require("../utils/generateOtp");
-const sendMail = require("../utils/sendMail");
+const { sendOtpMail } = require("../utils/sendMail");
 const User = require("../models/user.model");
 exports.sendOtp = async (req, res) => {
   try {
@@ -22,7 +22,7 @@ exports.sendOtp = async (req, res) => {
       expiresAt
     });
 
-    await sendMail(email, otp);
+    await sendOtpMail(email, otp);
     console.log("OTP sent to email:", email ,"...otp:-",otp);
 
     res.json({ message: "OTP sent successfully" });

@@ -22,7 +22,8 @@ exports.sendOtp = async (req, res) => {
       expiresAt
     });
 
-    await sendOtpMail(email, otp);
+   await sendOtpMail(email, otp).catch(console.error);
+
     console.log("OTP sent to email:", email ,"...otp:-",otp);
 
     res.json({ message: "OTP sent successfully" });

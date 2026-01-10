@@ -1,62 +1,54 @@
+const SibApiV3Sdk = require("sib-api-v3-sdk");
 
+// Setup Brevo client
+const client = SibApiV3Sdk.ApiClient.instance;
+client.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
 
-const nodemailer = require("nodemailer");
+const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
-/**
+/*
  * SEND OTP MAIL
  */
 const sendOtpMail = async (email, otp) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+    const response = await emailApi.sendTransacEmail({
+      sender: {
+        email: process.env.SENDER_EMAIL,
+        name: "Retail Portal",
       },
-      secure: false,
-    });
-
-    const info = await transporter.sendMail({
-      from: `"Retail Portal" <${process.env.MAIL_USER}>`,
-      to: email,
+      to: [{ email }],
       subject: "Your OTP Verification Code",
-      html: `<h2>Your OTP is ${otp}</h2><p>Valid for 5 minutes</p>`,
+      htmlContent: `<h2>Your OTP is ${otp}</h2><p>Valid for 5 minutes</p>`,
     });
 
-    console.log(info.response);
-    return info;
+    console.log("OTP MAIL RESPONSE:", response);
+
+    return response;
   } catch (error) {
-    console.log(error.message);
-    return error.message;
+    console.error("OTP MAIL ERROR:", error.message);
+    throw error;
   }
 };
 
-/**
+/*
  * SEND ORDER MAIL
  */
 const sendOrderMail = async ({ to, subject, html }) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+    const response = await emailApi.sendTransacEmail({
+      sender: {
+        email: process.env.SENDER_EMAIL,
+        name: "Pizza Store 🍕",
       },
-      secure: false,
-    });
-
-    const info = await transporter.sendMail({
-      from: `"Pizza Store 🍕" <${process.env.MAIL_USER}>`,
-      to,
+      to: [{ email: to }],
       subject,
-      html,
+      htmlContent: html,
     });
 
-    console.log(info.response);
-    return info;
+    return response;
   } catch (error) {
-    console.log(error.message);
-    return error.message;
+    console.error("ORDER MAIL ERROR:", error.message);
+    throw error;
   }
 };
 
@@ -64,6 +56,71 @@ module.exports = {
   sendOtpMail,
   sendOrderMail,
 };
+
+
+// const nodemailer = require("nodemailer");
+// /*
+//  * SEND OTP MAIL
+//  */
+// const sendOtpMail = async (email, otp) => {
+//   try {
+//     const transporter = nodemailer.createTransport({
+//       host: process.env.MAIL_HOST,
+//       auth: {
+//         user: process.env.MAIL_USER,
+//         pass: process.env.MAIL_PASS,
+//       },
+//       secure: false,
+//     });
+
+//     const info = await transporter.sendMail({
+//       from: `"Retail Portal" <${process.env.MAIL_USER}>`,
+//       to: email,
+//       subject: "Your OTP Verification Code",
+//       html: `<h2>Your OTP is ${otp}</h2><p>Valid for 5 minutes</p>`,
+//     });
+
+//     console.log(info.response);
+//     return info;
+//   } catch (error) {
+//     console.log(error.message);
+//     return error.message;
+//   }
+// };
+
+// /**
+//  * SEND ORDER MAIL
+//  */
+// const sendOrderMail = async ({ to, subject, html }) => {
+//   try {
+//     const transporter = nodemailer.createTransport({
+//       host: process.env.MAIL_HOST,
+//       auth: {
+//         user: process.env.MAIL_USER,
+//         pass: process.env.MAIL_PASS,
+//       },
+//       secure: false,
+//     });
+
+//     const info = await transporter.sendMail({
+//       from: `"Pizza Store 🍕" <${process.env.MAIL_USER}>`,
+//       to,
+//       subject,
+//       html,
+//     });
+
+//     console.log(info.response);
+//     return info;
+//   } catch (error) {
+//     console.log(error.message);
+//     return error.message;
+//   }
+// };
+
+// module.exports = {
+//   sendOtpMail,
+//   sendOrderMail,
+// };
 
 
 

@@ -7,7 +7,7 @@ exports.sendOtp = async (req, res) => {
     const { email } = req.body;
  const userExists = await User.findOne({ email });
 
- console.log("Brevo API Key:",process.env.BREVO_API_KEY); 
+//  console.log("Brevo API Key:",process.env.BREVO_API_KEY); 
 
  if(userExists){
     res.json({ message: "User already exists. Please login." });

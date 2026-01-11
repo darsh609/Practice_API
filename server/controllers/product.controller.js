@@ -54,6 +54,8 @@ exports.addProduct = async (req, res) => {
       category = category.trim().toLowerCase();
     }
 
+    category = category.toUpperCase();
+
     const product = await Product.create({
       name,
       category,
@@ -66,7 +68,7 @@ exports.addProduct = async (req, res) => {
       data: product
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to add product" });
+    res.status(500).json({ message: error.message || "Failed to add product" });
   }
 };
 exports.updateProduct = async (req, res) => {

@@ -147,7 +147,7 @@ const VerifyOtp = () => {
             </button>
 
             {/* Resend OTP */}
-            <div className="text-center mt-6">
+            {/* <div className="text-center mt-6">
               <p className="text-gray-600">
                 Didn't receive code?{" "}
                 <button
@@ -157,7 +157,7 @@ const VerifyOtp = () => {
                   Resend OTP
                 </button>
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
